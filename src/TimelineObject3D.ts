@@ -88,6 +88,23 @@ export function updateTimeline(this: THREE.Object3D): void {
     }
 }
 
+/**
+ * Convert the object to three.js {@link https://github.com/mrdoob/three.js/wiki/JSON-Object-Scene-format-4 | JSON Object/Scene format}.
+ * @param meta Object containing metadata such as materials, textures or images for the object.
+ */
+export function toJSON(this: THREE.Object3D, meta: any) {
+    const data = THREE.Object3D.prototype.toJSON.call(this, meta);
+
+    if (this.hasTimeline == null) return data;
+
+    // TODO: Convert dates to strings
+    data.object.hasTimeline = true;
+    data.object.timelineDate = this.timelineDate;
+    data.object.timeline = this.timeline;
+
+    return data;
+}
+
 declare module 'three/src/core/Object3D.js' {
     export interface Object3D {
         readonly hasTimeline: boolean;

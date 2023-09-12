@@ -13,6 +13,7 @@ import * as TIMELINE from '../src';
 THREE.Object3D.prototype.initTimeline = TIMELINE.initTimeline;
 THREE.Object3D.prototype.setTimelineDate = TIMELINE.setTimelineDate;
 THREE.Object3D.prototype.updateTimeline = TIMELINE.updateTimeline;
+THREE.Object3D.prototype.toJSON = TIMELINE.toJSON;
 
 const now = new Date();
 const future1 = new Date(now.getTime() + 1_000);
