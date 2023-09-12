@@ -10,6 +10,8 @@ import { TransformControls } from 'three/addons/controls/TransformControls.js';
 
 import * as TIMELINE from '../src';
 
+THREE.ObjectLoader.prototype.parse = TIMELINE.parse;
+
 THREE.Object3D.prototype.initTimeline = TIMELINE.initTimeline;
 THREE.Object3D.prototype.setTimelineDate = TIMELINE.setTimelineDate;
 THREE.Object3D.prototype.updateTimeline = TIMELINE.updateTimeline;
@@ -30,6 +32,7 @@ const timelines = {
 };
 
 const loader = new THREE.ObjectLoader();
+let cube: THREE.Mesh;
 
 const params = {
     timeline: 'now',
@@ -48,8 +51,27 @@ const params = {
         const data = JSON.parse(json);
         const object = loader.parse(data);
 
+        object.setTimelineDate(timelines[params.timeline]);
+
         group.add(object);
         control.attach(object);
+
+        cube = object as any;
+    },
+    logCube: () => {
+        console.log('cube', cube);
+    },
+    logCubeTimelineDate: () => {
+        console.log('timelineDate', cube.timelineDate);
+    },
+    logCubeTimeline: () => {
+        console.log('timeline', cube.timeline);
+    },
+    logCubeTimelinePositions: () => {
+        console.log(
+            'timeline',
+            cube.timeline.map((timelineObject) => timelineObject.position),
+        );
     },
 };
 
@@ -93,7 +115,7 @@ document.body.appendChild(stats.dom);
 
 const geometry = new THREE.BoxGeometry(1, 1, 1);
 const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-const cube = new THREE.Mesh(geometry, material);
+cube = new THREE.Mesh(geometry, material);
 
 cube.initTimeline(now);
 Object.values(timelines).forEach((date) => {
@@ -130,7 +152,13 @@ timelineFolder
     })
     .listen();
 
-const jsonFolder = gui.addFolder('JSON');
+const jsonFolder = gui.addFolder('JSON').close();
 jsonFolder.add(params, 'clear').name('Clear group');
 jsonFolder.add(params, 'toJSON').name('To JSON');
 jsonFolder.add(params, 'fromJSON').name('From JSON');
+
+const debugFolder = gui.addFolder('Debug').close();
+debugFolder.add(params, 'logCube').name('Log cube');
+debugFolder.add(params, 'logCubeTimelineDate').name('Log cube timeline date');
+debugFolder.add(params, 'logCubeTimeline').name('Log cube timeline');
+debugFolder.add(params, 'logCubeTimelinePositions').name('Log cube timeline positions');

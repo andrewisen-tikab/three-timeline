@@ -7,6 +7,10 @@ type TimelineObject = {
     scale: THREE.Vector3;
 };
 
+type TimelineJSONObject = Pick<TimelineObject, 'position' | 'rotation' | 'scale'> & {
+    date: string;
+};
+
 class TimeLineFactor {
     public create(object3D: THREE.Object3D, date: Date): TimelineObject {
         object3D.updateMatrix();
@@ -99,12 +103,52 @@ export function toJSON(this: THREE.Object3D, meta: any) {
 
     if (this.hasTimeline == null) return data;
 
-    // TODO: Convert dates to strings
+    // Convert the timeline to JSON
+
     data.object.hasTimeline = true;
-    data.object.timelineDate = this.timelineDate;
-    data.object.timeline = this.timeline;
+    data.object.timelineDate = this.timelineDate.toJSON();
+
+    data.object.timeline = this.timeline.map((timelineObject) => {
+        // Represent the date as string
+        const object: TimelineJSONObject = {
+            date: timelineObject.date.toJSON(),
+            position: timelineObject.position,
+            rotation: timelineObject.rotation,
+            scale: timelineObject.scale,
+        };
+        return object;
+    });
 
     return data;
+}
+
+const _parse = THREE.ObjectLoader.prototype.parse;
+
+export function parse(
+    this: THREE.ObjectLoader,
+    json: any,
+    onLoad?: (object: THREE.Object3D) => void,
+): THREE.Object3D {
+    const object = _parse.call(this, json, onLoad);
+
+    // Create dates from strings
+
+    if (json.object.hasTimeline) {
+        object.timelineDate = new Date(json.object.timelineDate);
+
+        object.timeline = json.object.timeline.map((timelineJSONObject: TimelineJSONObject) => {
+            const timelineObject: TimelineObject = {
+                date: new Date(timelineJSONObject.date),
+                position: timelineJSONObject.position,
+                rotation: timelineJSONObject.rotation,
+                scale: timelineJSONObject.scale,
+            };
+
+            return timelineObject;
+        });
+    }
+
+    return object;
 }
 
 declare module 'three/src/core/Object3D.js' {
