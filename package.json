@@ -12,7 +12,6 @@
         "dev": "vite",
         "build": "tsc && vite build",
         "build:example": "tsc && vite build && vite build -c vite.config.example.ts",
-        "build:worker": "node buildWorker.js",
         "preview": "vite preview",
         "ts": "tsc",
         "docs": "typedoc",
