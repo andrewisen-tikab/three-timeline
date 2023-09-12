@@ -1,6 +1,6 @@
 {
     "name": "three-timeline",
-    "version": "0.0.0",
+    "version": "0.0.1",
     "description": "Adds an extra dimension, time, to regular three.js objects",
     "keywords": [
         "threejs",
