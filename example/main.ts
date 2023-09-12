@@ -29,8 +29,28 @@ const timelines = {
     future4,
 };
 
+const loader = new THREE.ObjectLoader();
+
 const params = {
     timeline: 'now',
+    clear: () => {
+        group.clear();
+        control.detach();
+    },
+    toJSON: () => {
+        localStorage.setItem('three-timeline', JSON.stringify(cube.toJSON()));
+    },
+    fromJSON: () => {
+        const json = localStorage.getItem('three-timeline');
+        if (!json) return;
+        params.clear();
+
+        const data = JSON.parse(json);
+        const object = loader.parse(data);
+
+        group.add(object);
+        control.attach(object);
+    },
 };
 
 const handleChange = (value: string) => {
@@ -60,6 +80,8 @@ document.addEventListener('keydown', (event) => {
 const gui = new GUI();
 
 const scene = new THREE.Scene();
+const group = new THREE.Group();
+scene.add(group);
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
 const renderer = new THREE.WebGLRenderer();
@@ -72,6 +94,7 @@ document.body.appendChild(stats.dom);
 const geometry = new THREE.BoxGeometry(1, 1, 1);
 const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 const cube = new THREE.Mesh(geometry, material);
+
 cube.initTimeline(now);
 Object.values(timelines).forEach((date) => {
     cube.setTimelineDate(date);
@@ -85,7 +108,7 @@ control.addEventListener('mouseUp', function (event) {
     cube.updateTimeline();
 });
 
-scene.add(cube);
+group.add(cube);
 
 camera.position.z = 5;
 
@@ -99,8 +122,15 @@ function animate() {
 
 animate();
 
-gui.add(params, 'timeline', Object.keys(timelines))
+const timelineFolder = gui.addFolder('Timeline');
+timelineFolder
+    .add(params, 'timeline', Object.keys(timelines))
     .onChange((value) => {
         handleChange(value);
     })
     .listen();
+
+const jsonFolder = gui.addFolder('JSON');
+jsonFolder.add(params, 'clear').name('Clear group');
+jsonFolder.add(params, 'toJSON').name('To JSON');
+jsonFolder.add(params, 'fromJSON').name('From JSON');
