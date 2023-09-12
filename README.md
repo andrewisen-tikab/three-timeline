@@ -13,6 +13,7 @@ import * as TIMELINE from 'three-timeline';
 THREE.Object3D.prototype.initTimeline = TIMELINE.initTimeline;
 THREE.Object3D.prototype.setTimelineDate = TIMELINE.setTimelineDate;
 THREE.Object3D.prototype.updateTimeline = TIMELINE.updateTimeline;
+THREE.Object3D.prototype.toJSON = TIMELINE.toJSON;
 
 // Generate an object
 const geometry = new THREE.BoxGeometry(1, 1, 1);
