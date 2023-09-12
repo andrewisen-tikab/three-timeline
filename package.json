@@ -9,6 +9,7 @@
         "datetime",
         "date"
     ],
+    "type": "module",
     "main": "dist/three-timeline.js",
     "packageManager": "yarn@3.2.0",
     "devDependencies": {
