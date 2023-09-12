@@ -1,5 +1,15 @@
 {
     "name": "three-timeline",
+    "version": "0.0.0",
+    "description": "Adds an extra dimension, time, to regular three.js objects",
+    "keywords": [
+        "threejs",
+        "time",
+        "timeline",
+        "datetime",
+        "date"
+    ],
+    "main": "dist/three-timeline.js",
     "packageManager": "yarn@3.2.0",
     "devDependencies": {
         "@types/three": "^0.156.0",
