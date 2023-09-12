@@ -13,6 +13,9 @@ import * as TIMELINE from 'three-timeline';
 THREE.Object3D.prototype.initTimeline = TIMELINE.initTimeline;
 THREE.Object3D.prototype.setTimelineDate = TIMELINE.setTimelineDate;
 THREE.Object3D.prototype.updateTimeline = TIMELINE.updateTimeline;
+
+// Add serialization extension functions (optional)
+THREE.ObjectLoader.prototype.parse = TIMELINE.parse;
 THREE.Object3D.prototype.toJSON = TIMELINE.toJSON;
 
 // Generate an object
