@@ -34,7 +34,7 @@ const now = new Date();
 cube.initTimeline(now);
 ```
 
-Now, update the timeline and set a new date:
+Now, update the object's position and update the timeline:
 
 ```ts
 // Move the cube
@@ -42,7 +42,11 @@ cube.position.x = 100;
 
 // Update the timeline at the current date
 cube.updateTimeline(); // First timeline
+```
 
+Finally, set a new timeline date and update the object's position again:
+
+```ts
 // Set a new timeline date
 const futureDate = new Date(now.getTime() + 1000);
 cube.setTimelineDate(futureDate);
@@ -52,7 +56,11 @@ cube.position.x = -5;
 cube.updateTimeline(); // Second timeline
 ```
 
-N.B: Each object holds its own timeline data.
+You will now have two timelines, `now` and `futureDate`.
+The object will move from `x = 100` to `x = -5`.
+
+It's you job to keep track of the timelines and update them accordingly.
+The object will only store it's own timeline data.
 
 ## Example
 
@@ -60,3 +68,23 @@ See the `example` folder for a working example.
 Or visit the GitHub Pages site:
 
 [https://andrewisen-tikab.github.io/three-timeline/example/](https://andrewisen-tikab.github.io/three-timeline/example/)
+
+## Docs
+
+Auto-generated docs can be found here:
+
+[https://andrewisen-tikab.github.io/three-timeline/docs/](https://andrewisen-tikab.github.io/three-timeline/docs/)
+
+## Status
+
+This is a work in progress. It's not ready for production use.
+
+## Is this library right for you?
+
+It depends on your use case. If you need to animate objects in a `three.js` scene, then this library is probably not for you. Instead, you should use the built-in `three.js` animation system.
+
+But, if you want to represent object's over a set of specific points in time, or phases, then this library might be for you.
+
+## License
+
+MIT
