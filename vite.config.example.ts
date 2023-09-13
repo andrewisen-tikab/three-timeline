@@ -1,6 +1,15 @@
 import { resolve } from 'path';
 import { defineConfig } from 'vite';
 
+import { EXAMPLES } from './examples';
+
+// @ts-ignore
+const input: { [key: string]: resolve } = {};
+
+EXAMPLES.forEach((example) => {
+    input[example] = resolve(__dirname, `examples/examples/${example}/index.html`);
+});
+
 export default defineConfig({
     base: './',
     build: {
@@ -8,9 +17,7 @@ export default defineConfig({
         minify: false,
         sourcemap: true,
         rollupOptions: {
-            input: {
-                example: resolve(__dirname, 'example/index.html'),
-            },
+            input,
         },
     },
 });

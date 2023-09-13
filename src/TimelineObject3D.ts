@@ -1,163 +1,31 @@
 import * as THREE from 'three';
-
-type TimelineObject = {
-    date: Date;
-    position: THREE.Vector3;
-    rotation: THREE.Euler;
-    scale: THREE.Vector3;
-};
-
-type TimelineJSONObject = Pick<TimelineObject, 'position' | 'rotation' | 'scale'> & {
-    date: string;
-};
-
-class TimeLineFactor {
-    public create(object3D: THREE.Object3D, date: Date): TimelineObject {
-        object3D.updateMatrix();
-
-        const timelineObject: TimelineObject = {
-            date: date,
-            position: object3D.position.clone(),
-            rotation: object3D.rotation.clone(),
-            scale: object3D.scale.clone(),
-        };
-
-        return timelineObject;
-    }
-}
-
-const factory = new TimeLineFactor();
-
-function _createTimelineObject(this: THREE.Object3D, date: Date) {
-    const timelineObject = factory.create(this, date);
-    this.timeline.push(timelineObject);
-}
-
-export function initTimeline(this: THREE.Object3D, date = new Date()): void {
-    // @ts-ignore
-    this.hasTimeline = true;
-
-    this.timeline = [];
-    this.timelineDate = date;
-
-    _createTimelineObject.call(this, date);
-}
+import {
+    AbstractTimelineObject3D,
+    initTimeline,
+    setTimelineDate,
+    updateTimeline,
+} from './extensions';
 
 /**
- *
- * @param this
- * @param date
+ * A specific {@link THREE.Object3D} that has a timeline features.
+ * Use this class if you **don't** want to use extensions.
  */
-export function setTimelineDate(this: THREE.Object3D, date: Date): void {
-    this.timelineDate = date;
+export default class TimelineObject3D extends THREE.Object3D implements AbstractTimelineObject3D {
+    readonly hasTimeline: boolean;
 
-    // Check if the date exists in the timeline
-    // const timelineObject = this.timeline.find((timelineObject) => {
-    //     return timelineObject.date.getTime() === date.getTime();
-    // });
+    public initTimeline = initTimeline;
 
-    let timelineObject: TimelineObject | null = null;
+    public setTimelineDate = setTimelineDate;
 
-    for (let i = 0; i < this.timeline.length; i++) {
-        const object = this.timeline[i];
-        if (object.date.getTime() === date.getTime()) {
-            timelineObject = object;
-            break;
-        }
-    }
+    public updateTimeline = updateTimeline;
 
-    if (timelineObject) {
-        this.position.copy(timelineObject.position);
-        this.rotation.copy(timelineObject.rotation);
-        this.scale.copy(timelineObject.scale);
-    } else {
-        _createTimelineObject.call(this, date);
-    }
-
-    this.updateMatrix();
-}
-
-export function updateTimeline(this: THREE.Object3D): void {
-    // Check if the date exists in the timeline
-    const timelineObject = this.timeline.find((timelineObject) => {
-        return timelineObject.date.getTime() === this.timelineDate.getTime();
-    });
-
-    if (timelineObject) {
-        timelineObject.position.copy(this.position);
-        timelineObject.rotation.copy(this.rotation);
-        timelineObject.scale.copy(this.scale);
-    } else {
-        _createTimelineObject.call(this, this.timelineDate);
-    }
-}
-
-const _toJSON = THREE.Object3D.prototype.toJSON;
-
-/**
- * Convert the object to three.js {@link https://github.com/mrdoob/three.js/wiki/JSON-Object-Scene-format-4 | JSON Object/Scene format}.
- * @param meta Object containing metadata such as materials, textures or images for the object.
- */
-export function toJSON(this: THREE.Object3D, meta: any) {
-    const data = _toJSON.call(this, meta);
-
-    if (this.hasTimeline == null) return data;
-
-    // Convert the timeline to JSON
-
-    data.object.hasTimeline = true;
-    data.object.timelineDate = this.timelineDate.toJSON();
-
-    data.object.timeline = this.timeline.map((timelineObject) => {
-        // Represent the date as string
-        const object: TimelineJSONObject = {
-            date: timelineObject.date.toJSON(),
-            position: timelineObject.position,
-            rotation: timelineObject.rotation,
-            scale: timelineObject.scale,
-        };
-        return object;
-    });
-
-    return data;
-}
-
-const _parse = THREE.ObjectLoader.prototype.parse;
-
-export function parse(
-    this: THREE.ObjectLoader,
-    json: any,
-    onLoad?: (object: THREE.Object3D) => void,
-): THREE.Object3D {
-    const object = _parse.call(this, json, onLoad);
-
-    // Create dates from strings
-
-    if (json.object.hasTimeline) {
-        object.timelineDate = new Date(json.object.timelineDate);
-
-        object.timeline = json.object.timeline.map((timelineJSONObject: TimelineJSONObject) => {
-            const timelineObject: TimelineObject = {
-                date: new Date(timelineJSONObject.date),
-                position: timelineJSONObject.position,
-                rotation: timelineJSONObject.rotation,
-                scale: timelineJSONObject.scale,
-            };
-
-            return timelineObject;
-        });
-    }
-
-    return object;
-}
-
-declare module 'three/src/core/Object3D.js' {
-    export interface Object3D {
-        readonly hasTimeline: boolean;
-        timelineDate: Date;
-        timeline: TimelineObject[];
-        initTimeline: typeof initTimeline;
-        setTimelineDate: typeof setTimelineDate;
-        updateTimeline: typeof updateTimeline;
+    /**
+     * Create a new {@link TimelineObject3D} and initialize the timeline.
+     * @param date The date of the timeline.
+     */
+    constructor(date?: Date) {
+        super();
+        this.hasTimeline = true;
+        this.initTimeline(date);
     }
 }
