@@ -8,8 +8,8 @@ import { TransformControls } from 'three/addons/controls/TransformControls.js';
 
 import * as TIMELINE from '../../src';
 
-const GEOMETRY = /* @__PURE__ */ new THREE.BoxGeometry(1, 1, 1);
-const MATERIAL = /* @__PURE__ */ new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+export const GEOMETRY = /* @__PURE__ */ new THREE.BoxGeometry(1, 1, 1);
+export const MATERIAL = /* @__PURE__ */ new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 
 THREE.ObjectLoader.prototype.parse = TIMELINE.parse;
 
@@ -19,6 +19,8 @@ THREE.Object3D.prototype.updateTimeline = TIMELINE.updateTimeline;
 THREE.Object3D.prototype.toJSON = TIMELINE.toJSON;
 
 export default class Example {
+    public gui: GUI;
+
     public now: Date;
     public future1: Date;
     public future2: Date;
@@ -34,7 +36,7 @@ export default class Example {
     public scene: THREE.Scene;
     public group: THREE.Group<THREE.Object3DEventMap>;
     public camera: THREE.PerspectiveCamera;
-    public control: any;
+    public control: TransformControls;
     public renderer: THREE.WebGLRenderer;
 
     public params = {
@@ -86,7 +88,7 @@ export default class Example {
 
     constructor() {
         // Setup debug
-        const gui = new GUI();
+        this.gui = new GUI();
 
         const stats = new Stats();
         document.body.appendChild(stats.dom);
@@ -145,11 +147,11 @@ export default class Example {
         cube.setTimelineDate(this.timelines.now);
 
         // Setup controls
-        const control = new TransformControls(this.camera, this.renderer.domElement);
-        this.scene.add(control);
-        control.attach(cube);
+        this.control = new TransformControls(this.camera, this.renderer.domElement);
+        this.scene.add(this.control);
+        this.control.attach(cube);
 
-        control.addEventListener('mouseUp', (_event: any) => {
+        this.control.addEventListener('mouseUp', (_event: any) => {
             if (this.cube == null) return;
             this.cube.updateTimeline();
         });
@@ -157,21 +159,6 @@ export default class Example {
         // Adjust camera
 
         this.camera.position.z = 5;
-
-        // Setup change events
-        const handleChange = (value: string) => {
-            if (this.cube == null) return;
-            console.log('Changed timeline to:', value);
-
-            // Measure the time it takes to update the timeline
-            const start = performance.now();
-
-            // @ts-ignore
-            this.cube.setTimelineDate(this.timelines[value]);
-
-            const end = performance.now();
-            console.log('Time to update timeline:', end - start);
-        };
 
         document.addEventListener('keydown', (event) => {
             if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
@@ -183,7 +170,7 @@ export default class Example {
                 this.params.timeline = keys[index + 1];
             else if (event.key === 'ArrowLeft' && index > 0) this.params.timeline = keys[index - 1];
 
-            handleChange(this.params.timeline);
+            this.handleChange(this.params.timeline);
         });
 
         // Setup render loop
@@ -197,25 +184,40 @@ export default class Example {
 
         // Setup GUI
 
-        const timelineFolder = gui.addFolder('Timeline');
+        const timelineFolder = this.gui.addFolder('Timeline');
         timelineFolder
             .add(this.params, 'timeline', Object.keys(this.timelines))
             .onChange((value) => {
-                handleChange(value);
+                this.handleChange(value);
             })
             .listen();
 
-        const jsonFolder = gui.addFolder('JSON').close();
+        const jsonFolder = this.gui.addFolder('JSON').close();
         jsonFolder.add(this.params, 'clear').name('Clear group');
         jsonFolder.add(this.params, 'toJSON').name('To JSON');
         jsonFolder.add(this.params, 'fromJSON').name('From JSON');
 
-        const debugFolder = gui.addFolder('Debug').close();
+        const debugFolder = this.gui.addFolder('Debug').close();
         debugFolder.add(this.params, 'logCube').name('Log cube');
         debugFolder.add(this.params, 'logCubeTimelineDate').name('Log cube timeline date');
         debugFolder.add(this.params, 'logCubeTimeline').name('Log cube timeline');
         debugFolder
             .add(this.params, 'logCubeTimelinePositions')
             .name('Log cube timeline positions');
+    }
+
+    // Setup change events
+    handleChange(value: string) {
+        if (this.cube == null) return;
+        console.log('Changed timeline to:', value);
+
+        // Measure the time it takes to update the timeline
+        const start = performance.now();
+
+        // @ts-ignore
+        this.cube.setTimelineDate(this.timelines[value]);
+
+        const end = performance.now();
+        console.log('Time to update timeline:', end - start);
     }
 }

@@ -67,7 +67,9 @@ The object will only store it's own timeline data.
 See the `example` folder for a working example.
 Or visit the GitHub Pages site:
 
-[https://andrewisen-tikab.github.io/three-timeline/example/](https://andrewisen-tikab.github.io/three-timeline/example/)
+[https://andrewisen-tikab.github.io/three-timeline/examples/examples/simple/](https://andrewisen-tikab.github.io/three-timeline/examples/examples/simple/)
+
+[https://andrewisen-tikab.github.io/three-timeline/examples/examples/performance/](https://andrewisen-tikab.github.io/three-timeline/examples/examples/performance/)
 
 ## Docs
 
