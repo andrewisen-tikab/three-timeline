@@ -26,7 +26,7 @@ const GEOMETRIES = {
     TORUS: new THREE.Mesh(new THREE.TorusGeometry(10, 3, 16, 100), material),
 } as const;
 
-const geometries = Object.keys(GEOMETRIES);
+// const geometries = Object.keys(GEOMETRIES);
 
 const randomPosition = (object: THREE.Object3D) => {
     object.position.x = Math.random() * 10 - 5;
