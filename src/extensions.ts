@@ -42,10 +42,6 @@ export function setTimelineDate(this: THREE.Object3D, date: Date): void {
     this.timelineDate = date;
 
     // Check if the date exists in the timeline
-    // const timelineObject = this.timeline.find((timelineObject) => {
-    //     return timelineObject.date.getTime() === date.getTime();
-    // });
-
     let timelineObject: TimelineObject | null = null;
 
     for (let i = 0; i < this.timeline.length; i++) {

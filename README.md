@@ -2,6 +2,8 @@
 
 Adds an extra dimension, **time**, to regular `three.js` objects.
 
+<img src="https://github.com/andrewisen-tikab/three-timeline/blob/dev/resources/example.gif?raw=true" width="100%" />
+
 ## Usage
 
 First, setup everything:
@@ -68,6 +70,8 @@ See the `example` folder for a working example.
 Or visit the GitHub Pages site:
 
 [https://andrewisen-tikab.github.io/three-timeline/examples/examples/simple/](https://andrewisen-tikab.github.io/three-timeline/examples/examples/simple/)
+
+[https://andrewisen-tikab.github.io/three-timeline/examples/examples/complex/](https://andrewisen-tikab.github.io/three-timeline/examples/examples/complex/)
 
 [https://andrewisen-tikab.github.io/three-timeline/examples/examples/performance/](https://andrewisen-tikab.github.io/three-timeline/examples/examples/performance/)
 

@@ -1,1 +1,1 @@
-export const EXAMPLES = ['simple', 'performance'];
+export const EXAMPLES = ['simple', 'complex', 'performance'];
