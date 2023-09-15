@@ -1,3 +1,4 @@
+import { Object3D, Object3DEventMap } from 'three';
 import TimelineObject3D from './TimelineObject3D';
 
 /**
@@ -13,5 +14,10 @@ export default class ComplexTimelineObject3D extends TimelineObject3D {
 
     constructor(date?: Date) {
         super(date);
+    }
+
+    add(...object: Object3D<Object3DEventMap>[]): this {
+        super.add(...object);
+        return this;
     }
 }

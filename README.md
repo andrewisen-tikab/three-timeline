@@ -69,6 +69,8 @@ Or visit the GitHub Pages site:
 
 [https://andrewisen-tikab.github.io/three-timeline/examples/examples/simple/](https://andrewisen-tikab.github.io/three-timeline/examples/examples/simple/)
 
+[https://andrewisen-tikab.github.io/three-timeline/examples/examples/complex/](https://andrewisen-tikab.github.io/three-timeline/examples/examples/complex/)
+
 [https://andrewisen-tikab.github.io/three-timeline/examples/examples/performance/](https://andrewisen-tikab.github.io/three-timeline/examples/examples/performance/)
 
 ## Docs
