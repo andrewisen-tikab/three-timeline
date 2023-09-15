@@ -2,6 +2,8 @@
 
 Adds an extra dimension, **time**, to regular `three.js` objects.
 
+<img src="https://github.com/andrewisen-tikab/three-timeline/blob/dev/resources/example.gif?raw=true" width="100%" />
+
 ## Usage
 
 First, setup everything:
